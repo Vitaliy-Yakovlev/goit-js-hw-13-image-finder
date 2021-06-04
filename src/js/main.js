@@ -1,38 +1,51 @@
 import hitsTpl from '../templates/images.hbs';
-import getRefs from './getRefs';
 import NewsAipService from './apiService';
+import LoadMoreBtn from './load-more-btn';
 
-const refs = getRefs();
+const refs = {
+  searchForm: document.querySelector('.js-search-form'),
+  imagesContainer: document.querySelector('.js-gallery'),
+  element: document.getElementById('btn'),
+};
+
+const loadMoreBtn = new LoadMoreBtn({ selector: '[data-action="load-more"]', hidden: true });
 
 const newsAipService = new NewsAipService();
 
+loadMoreBtn.enable();
+
 refs.searchForm.addEventListener('submit', onSearch);
-refs.loadMoreBtn.addEventListener('click', onLoadMore);
+loadMoreBtn.refs.button.addEventListener('click', fetchImages);
 refs.element.addEventListener('click', onScpoll);
 
 function onSearch(e) {
   e.preventDefault();
 
-  clearHitscontainer();
-
   newsAipService.query = e.currentTarget.elements.query.value.trim();
   if (newsAipService.query.length === 0) {
     return;
   }
+
+  loadMoreBtn.show();
   newsAipService.resetRage();
-  newsAipService.fetchImages().then(appendHitsMarkup);
+  clearHitsСontainer();
+  fetchImages();
 }
 
-function onLoadMore() {
-  newsAipService.fetchImages().then(appendHitsMarkup);
+function fetchImages() {
+  loadMoreBtn.disable();
+  newsAipService.fetchImages().then(images => {
+    appendHitsMarkup(images);
+    loadMoreBtn.enable();
+  });
 }
 
-function appendHitsMarkup(hits) {
-  refs.imagesContainer.insertAdjacentHTML('beforeend', hitsTpl(hits));
+function appendHitsMarkup(images) {
+  refs.imagesContainer.insertAdjacentHTML('beforeend', hitsTpl(images));
   onScpoll();
 }
 
-function clearHitscontainer() {
+function clearHitsСontainer() {
   refs.imagesContainer.innerHTML = '';
 }
 
