@@ -5,7 +5,6 @@ import LoadMoreBtn from './load-more-btn';
 const refs = {
   searchForm: document.querySelector('.js-search-form'),
   imagesContainer: document.querySelector('.js-gallery'),
-  element: document.getElementById('btn'),
 };
 
 const loadMoreBtn = new LoadMoreBtn({ selector: '[data-action="load-more"]', hidden: true });
@@ -16,7 +15,6 @@ loadMoreBtn.enable();
 
 refs.searchForm.addEventListener('submit', onSearch);
 loadMoreBtn.refs.button.addEventListener('click', fetchImages);
-refs.element.addEventListener('click', onScpoll);
 
 function onSearch(e) {
   e.preventDefault();
@@ -50,12 +48,12 @@ function clearHitsСontainer() {
 }
 
 function onScpoll() {
-  setTimeout(() => {
-    if (newsAipService.page > 2) {
-      refs.element.scrollIntoView({
+  if (newsAipService.page > 2) {
+    setTimeout(() => {
+      window.scrollBy({
+        top: document.documentElement.clientHeight - 180,
         behavior: 'smooth',
-        block: 'end',
       });
-    }
-  }, 500);
+    }, 600);
+  }
 }
