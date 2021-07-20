@@ -51,7 +51,7 @@ function onScpoll() {
   if (newsAipService.page > 2) {
     setTimeout(() => {
       window.scrollBy({
-        top: document.documentElement.clientHeight - 180,
+        top: document.documentElement.clientHeight - 130,
         behavior: 'smooth',
       });
     }, 600);
